@@ -1,0 +1,500 @@
+
+#include<自訂\web\huaduixiang.mqh>
+
+huaduixiang hdx;
+
+int hbb,hma;
+int InpBandsPeriod =144;       // Period
+input int     InpBandsShift=0;         // Shift
+input double  InpBandsDeviations=2.1;
+
+input int InpMAPeriod=40;         // Period
+input int            InpMAShift=0;           // Shift
+input ENUM_MA_METHOD InpMAMethod=MODE_SMMA;  // Method
+
+int OnInit()
+  {
+         hbb=iCustom(Symbol(),0,"Examples\BB",InpBandsPeriod,InpBandsShift,InpBandsDeviations,PRICE_CLOSE);
+         hma=iCustom(Symbol(),0,"Examples\Custom Moving Average",InpMAPeriod,InpMAShift,InpMAMethod);
+
+
+
+  
+      hdx.lable("doulable","多單量",60,25,0);
+      hdx.lable("doutotals","0",60,45,0);
+      hdx.lable("konglable","空單量",120,25,0);
+      hdx.lable("kongtotals","0",120,45,0);      
+      
+      
+      hdx.lable("lablelots","下單量",0,25,0);
+      hdx.edit("editlots","0.01",0,45,50,20,0,Yellow);
+      
+      hdx.button("dou","開一多單",0,80,80,30,0);
+      hdx.button("kong","開一空單",90,80,80,30,0);
+      hdx.button("p1dd","平一多單",0,120,80,30,0);
+      hdx.button("p1kd","平一空單",90,120,80,30,0);
+      hdx.button("d1dd","賭一多單",0,160,80,40,0);
+      hdx.button("d1kd","賭一空單",90,160,80,40,0);
+      hdx.button("ddap","多單全平",0,210,80,40,0);
+      hdx.button("kdap","空單全平",90,210,80,40,0);
+      
+      
+   return(INIT_SUCCEEDED);
+  }
+//+------------------------------------------------------------------+
+//| Expert deinitialization function                                 |
+//+------------------------------------------------------------------+
+void OnDeinit(const int reason)
+  {
+//---
+   
+  }
+
+//+------------------------------------------------------------------+
+//| ChartEvent function                                              |
+//+------------------------------------------------------------------+
+void OnChartEvent(const int id,
+                  const long &lparam,
+                  const double &dparam,
+                  const string &sparam)
+                
+                  
+  {
+     
+
+   
+  }
+//+------------------------------------------------------------------+
+
+
+//+------------------------------------------------------------------+
+//| Expert tick function                                             |
+//+------------------------------------------------------------------+
+void OnTick()
+  {
+//---
+
+
+      //set total deal lable
+     if( ObjectGetInteger(0,"dou",OBJPROP_STATE,true))
+     {
+         ObjectSetString(0,"doutotals",OBJPROP_TEXT,IntegerToString(StringToInteger(ObjectGetString(0,"doutotals",OBJPROP_TEXT))+1));
+         double lots=StringToDouble(ObjectGetString(0,"editlots",OBJPROP_TEXT));
+          buy(Symbol(),formatlots(Symbol(),lots),0,0,Symbol()+"buy",168);
+         ObjectSetInteger(0,"dou",OBJPROP_STATE,false);
+     }
+     if( ObjectGetInteger(0,"kong",OBJPROP_STATE,true))
+     {
+         ObjectSetString(0,"kongtotals",OBJPROP_TEXT,IntegerToString(StringToInteger(ObjectGetString(0,"kongtotals",OBJPROP_TEXT))+1));
+         double lots=StringToDouble(ObjectGetString(0,"editlots",OBJPROP_TEXT));
+          sell(Symbol(), formatlots(Symbol(),lots),0,0,Symbol()+"sell",816);
+         ObjectSetInteger(0,"kong",OBJPROP_STATE,false);
+     }
+     
+ 
+      //sell/buy_1_deal
+     if( ObjectGetInteger(0,"p1dd",OBJPROP_STATE,true) )
+     {
+         ObjectSetString(0,"doutotals",OBJPROP_TEXT,IntegerToString(StringToInteger(ObjectGetString(0,"doutotals",OBJPROP_TEXT))-1));
+          close_1_buy(Symbol(),0);
+         ObjectSetInteger(0,"p1dd",OBJPROP_STATE,false);
+     }
+     if( ObjectGetInteger(0,"p1kd",OBJPROP_STATE,true))
+     {
+         ObjectSetString(0,"kongtotals",OBJPROP_TEXT,IntegerToString(StringToInteger(ObjectGetString(0,"kongtotals",OBJPROP_TEXT))-1));
+          close_1_sell(Symbol(),0);
+         ObjectSetInteger(0,"p1kd",OBJPROP_STATE,false );
+     }
+     
+
+      //du_1_buy/sell(若同時buy&sell會有問題_全部清空)>>出在jiaoyi int t=PositionsTotal()-1; for(int i=t-1;i>=0;i--){}
+     if( ObjectGetInteger(0,"d1dd",OBJPROP_STATE,true))
+     {
+         ObjectSetString(0,"doutotals",OBJPROP_TEXT,"1");
+          du_1_buy(Symbol(),0);
+         ObjectSetInteger(0,"d1dd",OBJPROP_STATE,false );
+     }
+     if( ObjectGetInteger(0,"d1kd",OBJPROP_STATE,true))
+     {
+         ObjectSetString(0,"kongtotals",OBJPROP_TEXT,"1");
+          du_1_sell(Symbol(),0);
+         ObjectSetInteger(0,"d1kd",OBJPROP_STATE,false );
+     }
+
+      //closeall
+     if( ObjectGetInteger(0,"ddap",OBJPROP_STATE,true))
+     {
+         ObjectSetString(0,"doutotals",OBJPROP_TEXT,"0");
+          closeallbuy(Symbol(),0);
+         ObjectSetInteger(0,"ddap",OBJPROP_STATE,false );
+     }
+      if( ObjectGetInteger(0,"kdap",OBJPROP_STATE,true))
+     {
+         ObjectSetString(0,"kongtotals",OBJPROP_TEXT,"0");
+          closeallsell(Symbol(),0);
+         ObjectSetInteger(0,"kdap",OBJPROP_STATE,false );
+     }
+     
+  }
+
+
+
+
+
+
+
+
+ulong  buy(string symbol,double lots,int slpoint,int tppoint,string com,int magic)
+   {
+      MqlTradeRequest request={0};
+      MqlTradeResult  result={0};
+      request.action=TRADE_ACTION_DEAL;
+      request.symbol=symbol;
+      request.type=ORDER_TYPE_BUY;
+      request.volume=lots;
+      request.deviation=100;
+      request.type_filling=ORDER_FILLING_IOC;
+      request.price=SymbolInfoDouble(symbol,SYMBOL_ASK);
+      if(slpoint>SymbolInfoInteger(symbol,SYMBOL_TRADE_STOPS_LEVEL))
+       {
+          request.sl=SymbolInfoDouble(symbol,SYMBOL_ASK)-slpoint*SymbolInfoDouble(symbol,SYMBOL_POINT);
+       }
+      if(tppoint>SymbolInfoInteger(symbol,SYMBOL_TRADE_STOPS_LEVEL))
+       {
+          request.tp=SymbolInfoDouble(symbol,SYMBOL_ASK)+tppoint*SymbolInfoDouble(symbol,SYMBOL_POINT);
+       } 
+      request.comment=com;
+      request.magic=magic;
+     //--- ?送?求
+      if(!OrderSend(request,result))
+            PrintFormat("OrderSend error %d",GetLastError());     // 如果不能?送?求，?出??代?
+      //--- 操作信息
+      PrintFormat("retcode=%u  deal=%I64u  order=%I64u",result.retcode,result.deal,result.order);
+      return(result.order);
+   }
+
+
+
+
+
+
+
+ulong  sell(string symbol,double lots,int slpoint,int tppoint,string com,int magic)
+   {
+      MqlTradeRequest request={0};
+      MqlTradeResult  result={0};
+      request.action=TRADE_ACTION_DEAL;
+      request.symbol=symbol;
+      request.type=ORDER_TYPE_SELL;
+      request.volume=lots;
+      request.deviation=100;
+      request.type_filling=ORDER_FILLING_IOC;
+      request.price=SymbolInfoDouble(symbol,SYMBOL_BID);
+      if(slpoint>SymbolInfoInteger(symbol,SYMBOL_TRADE_STOPS_LEVEL))
+       {
+         request.sl=SymbolInfoDouble(symbol,SYMBOL_BID)+slpoint*SymbolInfoDouble(symbol,SYMBOL_POINT);
+       }
+      if(tppoint>SymbolInfoInteger(symbol,SYMBOL_TRADE_STOPS_LEVEL))
+       {
+         request.tp=SymbolInfoDouble(symbol,SYMBOL_BID)-tppoint*SymbolInfoDouble(symbol,SYMBOL_POINT);
+       } 
+      request.comment=com;
+      request.magic=magic;
+     //--- ?送?求
+      if(!OrderSend(request,result))
+            PrintFormat("OrderSend error %d",GetLastError());     // 如果不能?送?求，?出??代?
+      //--- 操作信息
+      PrintFormat("retcode=%u  deal=%I64u  order=%I64u",result.retcode,result.deal,result.order);
+      return(result.order);
+   }
+   
+   
+void  close_1_buy(string symbol,int magic=0)
+ {
+   int t=PositionsTotal();
+   //for(int i=t-1;i>=0;i--)
+   
+   if(t>0)//場上多過0單就可減單
+     {
+       if(PositionGetTicket(t-1)>0)
+        {
+          if(PositionGetString(POSITION_SYMBOL)==symbol && PositionGetInteger(POSITION_TYPE)==POSITION_TYPE_BUY)
+           {
+              if(magic==0)
+               {
+                  MqlTradeRequest request={0};
+                  MqlTradeResult  result={0};
+                  request.action   =TRADE_ACTION_DEAL;                     // 交易操作?型
+                  request.symbol   =symbol;                              // 交易品种
+                  request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1手交易量 
+                  request.type     =ORDER_TYPE_SELL;                        // ???型
+                  request.price    =SymbolInfoDouble(symbol,SYMBOL_BID); // 持?价格
+                  request.type_filling=ORDER_FILLING_IOC;
+                  request.deviation=100; // 允?价格偏差
+                  request.position =PositionGetTicket(t-1);
+                  if(!OrderSend(request,result))
+                  PrintFormat("OrderSend error %d",GetLastError());   // 如果不能?送?求，?出??
+               }
+             
+              else
+               {
+                  if(PositionGetInteger(POSITION_MAGIC)==magic)
+                  {
+                     MqlTradeRequest request={0};
+                     MqlTradeResult  result={0};
+                     request.action   =TRADE_ACTION_DEAL;                     // 交易操作?型
+                     request.symbol   =symbol;                              // 交易品种
+                     request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1手交易量 
+                     request.type     =ORDER_TYPE_SELL;                        // ???型
+                     request.price    =SymbolInfoDouble(symbol,SYMBOL_BID); // 持?价格
+                     request.deviation=100; // 允?价格偏差
+                     request.type_filling=ORDER_FILLING_IOC;
+                     request.position =PositionGetTicket(t-1);
+                     if(!OrderSend(request,result))
+                     PrintFormat("OrderSend error %d",GetLastError());   // 如果不能?送?求，?出??
+                  }
+               }
+             
+           }
+        }
+     }
+ }
+     
+
+void  close_1_sell(string symbol,int magic=0)
+ {
+   int t=PositionsTotal();
+   //for(int i=t-1;i>=0;i--)
+   if(t>0)//場上多過0單就可減單
+     {
+       if(PositionGetTicket(t-1)>0)
+        {
+          if(PositionGetString(POSITION_SYMBOL)==symbol && PositionGetInteger(POSITION_TYPE)==POSITION_TYPE_SELL)
+           {
+              if(magic==0)
+               {
+                 MqlTradeRequest request={0};
+                 MqlTradeResult  result={0};
+                  request.action   =TRADE_ACTION_DEAL;                     // 交易操作?型
+                  request.symbol   =symbol;                              // 交易品种
+                  request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1手交易量 
+                  request.type     =ORDER_TYPE_BUY;                        // ???型
+                  request.price    =SymbolInfoDouble(symbol,SYMBOL_ASK); // 持?价格
+                  request.deviation=100; // 允?价格偏差
+                  request.type_filling=ORDER_FILLING_IOC;
+                  request.position =PositionGetTicket(t-1);
+                  if(!OrderSend(request,result))
+                  PrintFormat("OrderSend error %d",GetLastError());   // 如果不能?送?求，?出??
+               }
+              else
+               {
+                  if(PositionGetInteger(POSITION_MAGIC)==magic)
+                  {
+                     MqlTradeRequest request={0};
+                     MqlTradeResult  result={0};
+                     request.action   =TRADE_ACTION_DEAL;                     // 交易操作?型
+                     request.symbol   =symbol;                              // 交易品种
+                     request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1手交易量 
+                     request.type     =ORDER_TYPE_BUY;                        // ???型
+                     request.price    =SymbolInfoDouble(symbol,SYMBOL_ASK); // 持?价格
+                     request.deviation=100; // 允?价格偏差
+                     request.type_filling=ORDER_FILLING_IOC;
+                     request.position =PositionGetTicket(t-1);
+                     if(!OrderSend(request,result))
+                     PrintFormat("OrderSend error %d",GetLastError()); 
+                  }
+               }
+           }
+        }
+     }
+ }     
+     
+     
+void  du_1_buy(string symbol,int magic=0)
+ {
+   int t=PositionsTotal()-1;
+      for(int i=t-1;i>=0;i--)
+        {
+          if(PositionGetTicket(i)>0)
+           {
+             if(PositionGetString(POSITION_SYMBOL)==symbol && PositionGetInteger(POSITION_TYPE)==POSITION_TYPE_BUY)
+              {
+                 if(magic==0)
+                  {
+                     MqlTradeRequest request={0};
+                     MqlTradeResult  result={0};
+                     request.action   =TRADE_ACTION_DEAL;                     // 交易操作?型
+                     request.symbol   =symbol;                              // 交易品种
+                     request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1手交易量 
+                     request.type     =ORDER_TYPE_SELL;                        // ???型
+                     request.price    =SymbolInfoDouble(symbol,SYMBOL_BID); // 持?价格
+                     request.type_filling=ORDER_FILLING_IOC;
+                     request.deviation=100; // 允?价格偏差
+                     request.position =PositionGetTicket(i);
+                     if(!OrderSend(request,result))
+                     PrintFormat("OrderSend error %d",GetLastError());   // 如果不能?送?求，?出??
+                  }
+                 else
+                  {
+                     if(PositionGetInteger(POSITION_MAGIC)==magic)
+                     {
+                        MqlTradeRequest request={0};
+                        MqlTradeResult  result={0};
+                        request.action   =TRADE_ACTION_DEAL;                     // 交易操作?型
+                        request.symbol   =symbol;                              // 交易品种
+                        request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1手交易量 
+                        request.type     =ORDER_TYPE_SELL;                        // ???型
+                        request.price    =SymbolInfoDouble(symbol,SYMBOL_BID); // 持?价格
+                        request.deviation=100; // 允?价格偏差
+                        request.type_filling=ORDER_FILLING_IOC;
+                        request.position =PositionGetTicket(i);
+                        if(!OrderSend(request,result))
+                        PrintFormat("OrderSend error %d",GetLastError());   // 如果不能?送?求，?出??
+                     }
+                  }
+              }
+           }
+        }
+ }
+void  du_1_sell(string symbol,int magic=0)
+ {
+   int t=PositionsTotal()-1;
+      for(int i=t-1;i>=0;i--)
+        {
+          if(PositionGetTicket(i)>0)
+           {
+             if(PositionGetString(POSITION_SYMBOL)==symbol && PositionGetInteger(POSITION_TYPE)==POSITION_TYPE_SELL)
+              {
+                 if(magic==0)
+                  {
+                    MqlTradeRequest request={0};
+                    MqlTradeResult  result={0};
+                     request.action   =TRADE_ACTION_DEAL;                     // 交易操作?型
+                     request.symbol   =symbol;                              // 交易品种
+                     request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1手交易量 
+                     request.type     =ORDER_TYPE_BUY;                        // ???型
+                     request.price    =SymbolInfoDouble(symbol,SYMBOL_ASK); // 持?价格
+                     request.deviation=100; // 允?价格偏差
+                     request.type_filling=ORDER_FILLING_IOC;
+                     request.position =PositionGetTicket(i);
+                     if(!OrderSend(request,result))
+                     PrintFormat("OrderSend error %d",GetLastError());   // 如果不能?送?求，?出??
+                  }
+                 else
+                  {
+                     if(PositionGetInteger(POSITION_MAGIC)==magic)
+                     {
+                        MqlTradeRequest request={0};
+                        MqlTradeResult  result={0};
+                        request.action   =TRADE_ACTION_DEAL;                     // 交易操作?型
+                        request.symbol   =symbol;                              // 交易品种
+                        request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1手交易量 
+                        request.type     =ORDER_TYPE_BUY;                        // ???型
+                        request.price    =SymbolInfoDouble(symbol,SYMBOL_ASK); // 持?价格
+                        request.deviation=100; // 允?价格偏差
+                        request.type_filling=ORDER_FILLING_IOC;
+                        request.position =PositionGetTicket(i);
+                        if(!OrderSend(request,result))
+                        PrintFormat("OrderSend error %d",GetLastError()); 
+                     }
+                  }
+              }
+           }
+        }
+ }     
+ 
+ 
+ 
+ void  closeallbuy(string symbol,int magic=0)
+ {
+   int t=PositionsTotal();
+   for(int i=t-1;i>=0;i--)
+     {
+       if(PositionGetTicket(i)>0)
+        {
+          if(PositionGetString(POSITION_SYMBOL)==symbol && PositionGetInteger(POSITION_TYPE)==POSITION_TYPE_BUY)
+           {
+              if(magic==0)
+               {
+                  MqlTradeRequest request={0};
+                  MqlTradeResult  result={0};
+                  request.action   =TRADE_ACTION_DEAL;                     // 交易操作?型
+                  request.symbol   =symbol;                              // 交易品种
+                  request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1手交易量 
+                  request.type     =ORDER_TYPE_SELL;                        // ???型
+                  request.price    =SymbolInfoDouble(symbol,SYMBOL_BID); // 持?价格
+                  request.type_filling=ORDER_FILLING_IOC;
+                  request.deviation=100; // 允?价格偏差
+                  request.position =PositionGetTicket(i);
+                  if(!OrderSend(request,result))
+                  PrintFormat("OrderSend error %d",GetLastError());   // 如果不能?送?求，?出??
+               }
+              else
+               {
+                  if(PositionGetInteger(POSITION_MAGIC)==magic)
+                  {
+                     MqlTradeRequest request={0};
+                     MqlTradeResult  result={0};
+                     request.action   =TRADE_ACTION_DEAL;                     // 交易操作?型
+                     request.symbol   =symbol;                              // 交易品种
+                     request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1手交易量 
+                     request.type     =ORDER_TYPE_SELL;                        // ???型
+                     request.price    =SymbolInfoDouble(symbol,SYMBOL_BID); // 持?价格
+                     request.deviation=100; // 允?价格偏差
+                     request.type_filling=ORDER_FILLING_IOC;
+                     request.position =PositionGetTicket(i);
+                     if(!OrderSend(request,result))
+                     PrintFormat("OrderSend error %d",GetLastError());   // 如果不能?送?求，?出??
+                  }
+               }
+             
+           }
+        }
+     }
+ }
+void  closeallsell(string symbol,int magic=0)
+ {
+   int t=PositionsTotal();
+   for(int i=t-1;i>=0;i--)
+     {
+       if(PositionGetTicket(i)>0)
+        {
+          if(PositionGetString(POSITION_SYMBOL)==symbol && PositionGetInteger(POSITION_TYPE)==POSITION_TYPE_SELL)
+           {
+              if(magic==0)
+               {
+                 MqlTradeRequest request={0};
+                 MqlTradeResult  result={0};
+                  request.action   =TRADE_ACTION_DEAL;                     // 交易操作?型
+                  request.symbol   =symbol;                              // 交易品种
+                  request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1手交易量 
+                  request.type     =ORDER_TYPE_BUY;                        // ???型
+                  request.price    =SymbolInfoDouble(symbol,SYMBOL_ASK); // 持?价格
+                  request.deviation=100; // 允?价格偏差
+                  request.type_filling=ORDER_FILLING_IOC;
+                  request.position =PositionGetTicket(i);
+                  if(!OrderSend(request,result))
+                  PrintFormat("OrderSend error %d",GetLastError());   // 如果不能?送?求，?出??
+               }
+              else
+               {
+                  if(PositionGetInteger(POSITION_MAGIC)==magic)
+                  {
+                     MqlTradeRequest request={0};
+                     MqlTradeResult  result={0};
+                     request.action   =TRADE_ACTION_DEAL;                     // 交易操作?型
+                     request.symbol   =symbol;                              // 交易品种
+                     request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1手交易量 
+                     request.type     =ORDER_TYPE_BUY;                        // ???型
+                     request.price    =SymbolInfoDouble(symbol,SYMBOL_ASK); // 持?价格
+                     request.deviation=100; // 允?价格偏差
+                     request.type_filling=ORDER_FILLING_IOC;
+                     request.position =PositionGetTicket(i);
+                     if(!OrderSend(request,result))
+                     PrintFormat("OrderSend error %d",GetLastError()); 
+                  }
+               }
+           }
+        }
+     }
+ }
