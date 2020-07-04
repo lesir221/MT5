@@ -1,4 +1,3 @@
-
 #include<自訂\web\huaduixiang.mqh>
 
 huaduixiang hdx;
