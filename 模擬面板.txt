@@ -1,5 +1,5 @@
 
-#include<¦Û­q\web\huaduixiang.mqh>
+#include<è‡ªè¨‚\web\huaduixiang.mqh>
 
 huaduixiang hdx;
 
@@ -20,23 +20,23 @@ int OnInit()
 
 
   
-      hdx.lable("doulable","¦h³æ¶q",60,25,0);
+      hdx.lable("doulable","å¤šå–®é‡",60,25,0);
       hdx.lable("doutotals","0",60,45,0);
-      hdx.lable("konglable","ªÅ³æ¶q",120,25,0);
+      hdx.lable("konglable","ç©ºå–®é‡",120,25,0);
       hdx.lable("kongtotals","0",120,45,0);      
       
       
-      hdx.lable("lablelots","¤U³æ¶q",0,25,0);
+      hdx.lable("lablelots","ä¸‹å–®é‡",0,25,0);
       hdx.edit("editlots","0.01",0,45,50,20,0,Yellow);
       
-      hdx.button("dou","¶}¤@¦h³æ",0,80,80,30,0);
-      hdx.button("kong","¶}¤@ªÅ³æ",90,80,80,30,0);
-      hdx.button("p1dd","¥­¤@¦h³æ",0,120,80,30,0);
-      hdx.button("p1kd","¥­¤@ªÅ³æ",90,120,80,30,0);
-      hdx.button("d1dd","½ä¤@¦h³æ",0,160,80,40,0);
-      hdx.button("d1kd","½ä¤@ªÅ³æ",90,160,80,40,0);
-      hdx.button("ddap","¦h³æ¥ş¥­",0,210,80,40,0);
-      hdx.button("kdap","ªÅ³æ¥ş¥­",90,210,80,40,0);
+      hdx.button("dou","é–‹ä¸€å¤šå–®",0,80,80,30,0);
+      hdx.button("kong","é–‹ä¸€ç©ºå–®",90,80,80,30,0);
+      hdx.button("p1dd","å¹³ä¸€å¤šå–®",0,120,80,30,0);
+      hdx.button("p1kd","å¹³ä¸€ç©ºå–®",90,120,80,30,0);
+      hdx.button("d1dd","è³­ä¸€å¤šå–®",0,160,80,40,0);
+      hdx.button("d1kd","è³­ä¸€ç©ºå–®",90,160,80,40,0);
+      hdx.button("ddap","å¤šå–®å…¨å¹³",0,210,80,40,0);
+      hdx.button("kdap","ç©ºå–®å…¨å¹³",90,210,80,40,0);
       
       
    return(INIT_SUCCEEDED);
@@ -107,7 +107,7 @@ void OnTick()
      }
      
 
-      //du_1_buy/sell(­Y¦P®Ébuy&sell·|¦³°İÃD_¥ş³¡²MªÅ)>>¥X¦bjiaoyi int t=PositionsTotal()-1; for(int i=t-1;i>=0;i--){}
+      //du_1_buy/sell(è‹¥åŒæ™‚buy&sellæœƒæœ‰å•é¡Œ_å…¨éƒ¨æ¸…ç©º)>>å‡ºåœ¨jiaoyi int t=PositionsTotal()-1; for(int i=t-1;i>=0;i--){}
      if( ObjectGetInteger(0,"d1dd",OBJPROP_STATE,true))
      {
          ObjectSetString(0,"doutotals",OBJPROP_TEXT,"1");
@@ -165,10 +165,10 @@ ulong  buy(string symbol,double lots,int slpoint,int tppoint,string com,int magi
        } 
       request.comment=com;
       request.magic=magic;
-     //--- ?°e?¨D
+     //--- é€è«‹æ±‚
       if(!OrderSend(request,result))
-            PrintFormat("OrderSend error %d",GetLastError());     // ¦pªG¤£¯à?°e?¨D¡A?¥X??¥N?
-      //--- ¾Ş§@«H®§
+            PrintFormat("OrderSend error %d",GetLastError());     // å¦‚æœä¸èƒ½é€è«‹æ±‚ï¼Œè¼¸å‡ºéŒ¯èª¤ä»£ç¢¼
+      //--- æ“ä½œä¿¡æ¯
       PrintFormat("retcode=%u  deal=%I64u  order=%I64u",result.retcode,result.deal,result.order);
       return(result.order);
    }
@@ -200,10 +200,10 @@ ulong  sell(string symbol,double lots,int slpoint,int tppoint,string com,int mag
        } 
       request.comment=com;
       request.magic=magic;
-     //--- ?°e?¨D
+     //--- é€è«‹æ±‚
       if(!OrderSend(request,result))
-            PrintFormat("OrderSend error %d",GetLastError());     // ¦pªG¤£¯à?°e?¨D¡A?¥X??¥N?
-      //--- ¾Ş§@«H®§
+            PrintFormat("OrderSend error %d",GetLastError());     // å¦‚æœä¸èƒ½é€è«‹æ±‚ï¼Œè¼¸å‡ºéŒ¯èª¤ä»£ç¢¼
+      //--- æ“ä½œä¿¡æ¯
       PrintFormat("retcode=%u  deal=%I64u  order=%I64u",result.retcode,result.deal,result.order);
       return(result.order);
    }
@@ -214,7 +214,7 @@ void  close_1_buy(string symbol,int magic=0)
    int t=PositionsTotal();
    //for(int i=t-1;i>=0;i--)
    
-   if(t>0)//³õ¤W¦h¹L0³æ´N¥i´î³æ
+   if(t>0)//å ´ä¸Šå¤šé0å–®å°±å¯æ¸›å–®
      {
        if(PositionGetTicket(t-1)>0)
         {
@@ -224,16 +224,16 @@ void  close_1_buy(string symbol,int magic=0)
                {
                   MqlTradeRequest request={0};
                   MqlTradeResult  result={0};
-                  request.action   =TRADE_ACTION_DEAL;                     // ¥æ©ö¾Ş§@?«¬
-                  request.symbol   =symbol;                              // ¥æ©ö«~Ïú
-                  request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1¤â¥æ©ö¶q 
-                  request.type     =ORDER_TYPE_SELL;                        // ???«¬
-                  request.price    =SymbolInfoDouble(symbol,SYMBOL_BID); // «ù?É²®æ
+                  request.action   =TRADE_ACTION_DEAL;                     // äº¤æ˜“æ“ä½œé¡å‹
+                  request.symbol   =symbol;                              // äº¤æ˜“å“ç¨®
+                  request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1æ‰‹äº¤æ˜“é‡ 
+                  request.type     =ORDER_TYPE_SELL;                        // è¨‚å–®é¡å‹
+                  request.price    =SymbolInfoDouble(symbol,SYMBOL_BID); // æŒå€‰åƒ¹æ ¼
                   request.type_filling=ORDER_FILLING_IOC;
-                  request.deviation=100; // ¤¹?É²®æ°¾®t
+                  request.deviation=100; // å…è¨±åƒ¹æ ¼åå·®
                   request.position =PositionGetTicket(t-1);
                   if(!OrderSend(request,result))
-                  PrintFormat("OrderSend error %d",GetLastError());   // ¦pªG¤£¯à?°e?¨D¡A?¥X??
+                  PrintFormat("OrderSend error %d",GetLastError());   // å¦‚æœä¸èƒ½é€è«‹æ±‚ï¼Œè¼¸å‡ºéŒ¯èª¤
                }
              
               else
@@ -242,16 +242,16 @@ void  close_1_buy(string symbol,int magic=0)
                   {
                      MqlTradeRequest request={0};
                      MqlTradeResult  result={0};
-                     request.action   =TRADE_ACTION_DEAL;                     // ¥æ©ö¾Ş§@?«¬
-                     request.symbol   =symbol;                              // ¥æ©ö«~Ïú
-                     request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1¤â¥æ©ö¶q 
-                     request.type     =ORDER_TYPE_SELL;                        // ???«¬
-                     request.price    =SymbolInfoDouble(symbol,SYMBOL_BID); // «ù?É²®æ
-                     request.deviation=100; // ¤¹?É²®æ°¾®t
+                     request.action   =TRADE_ACTION_DEAL;                     // äº¤æ˜“æ“ä½œé¡å‹
+                     request.symbol   =symbol;                              // äº¤æ˜“å“ç¨®
+                     request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1æ‰‹äº¤æ˜“é‡ 
+                     request.type     =ORDER_TYPE_SELL;                        // è¨‚å–®é¡å‹
+                     request.price    =SymbolInfoDouble(symbol,SYMBOL_BID); // æŒå€‰åƒ¹æ ¼
+                     request.deviation=100; // å…è¨±åƒ¹æ ¼åå·®
                      request.type_filling=ORDER_FILLING_IOC;
                      request.position =PositionGetTicket(t-1);
                      if(!OrderSend(request,result))
-                     PrintFormat("OrderSend error %d",GetLastError());   // ¦pªG¤£¯à?°e?¨D¡A?¥X??
+                     PrintFormat("OrderSend error %d",GetLastError());   // å¦‚æœä¸èƒ½é€è«‹æ±‚ï¼Œè¼¸å‡ºéŒ¯èª¤
                   }
                }
              
@@ -265,7 +265,7 @@ void  close_1_sell(string symbol,int magic=0)
  {
    int t=PositionsTotal();
    //for(int i=t-1;i>=0;i--)
-   if(t>0)//³õ¤W¦h¹L0³æ´N¥i´î³æ
+   if(t>0)//å ´ä¸Šå¤šé0å–®å°±å¯æ¸›å–®
      {
        if(PositionGetTicket(t-1)>0)
         {
@@ -275,16 +275,16 @@ void  close_1_sell(string symbol,int magic=0)
                {
                  MqlTradeRequest request={0};
                  MqlTradeResult  result={0};
-                  request.action   =TRADE_ACTION_DEAL;                     // ¥æ©ö¾Ş§@?«¬
-                  request.symbol   =symbol;                              // ¥æ©ö«~Ïú
-                  request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1¤â¥æ©ö¶q 
-                  request.type     =ORDER_TYPE_BUY;                        // ???«¬
-                  request.price    =SymbolInfoDouble(symbol,SYMBOL_ASK); // «ù?É²®æ
-                  request.deviation=100; // ¤¹?É²®æ°¾®t
+                  request.action   =TRADE_ACTION_DEAL;                     // äº¤æ˜“æ“ä½œé¡å‹
+                  request.symbol   =symbol;                              // äº¤æ˜“å“ç¨®
+                  request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1æ‰‹äº¤æ˜“é‡ 
+                  request.type     =ORDER_TYPE_BUY;                        // è¨‚å–®é¡å‹
+                  request.price    =SymbolInfoDouble(symbol,SYMBOL_ASK); // æŒå€‰åƒ¹æ ¼
+                  request.deviation=100; // å…è¨±åƒ¹æ ¼åå·®
                   request.type_filling=ORDER_FILLING_IOC;
                   request.position =PositionGetTicket(t-1);
                   if(!OrderSend(request,result))
-                  PrintFormat("OrderSend error %d",GetLastError());   // ¦pªG¤£¯à?°e?¨D¡A?¥X??
+                  PrintFormat("OrderSend error %d",GetLastError());   // å¦‚æœä¸èƒ½é€è«‹æ±‚ï¼Œè¼¸å‡ºéŒ¯èª¤
                }
               else
                {
@@ -292,12 +292,12 @@ void  close_1_sell(string symbol,int magic=0)
                   {
                      MqlTradeRequest request={0};
                      MqlTradeResult  result={0};
-                     request.action   =TRADE_ACTION_DEAL;                     // ¥æ©ö¾Ş§@?«¬
-                     request.symbol   =symbol;                              // ¥æ©ö«~Ïú
-                     request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1¤â¥æ©ö¶q 
-                     request.type     =ORDER_TYPE_BUY;                        // ???«¬
-                     request.price    =SymbolInfoDouble(symbol,SYMBOL_ASK); // «ù?É²®æ
-                     request.deviation=100; // ¤¹?É²®æ°¾®t
+                     request.action   =TRADE_ACTION_DEAL;                     // äº¤æ˜“æ“ä½œé¡å‹
+                     request.symbol   =symbol;                              // äº¤æ˜“å“ç¨®
+                     request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1æ‰‹äº¤æ˜“é‡ 
+                     request.type     =ORDER_TYPE_BUY;                        // è¨‚å–®é¡å‹
+                     request.price    =SymbolInfoDouble(symbol,SYMBOL_ASK); // æŒå€‰åƒ¹æ ¼
+                     request.deviation=100; // å…è¨±åƒ¹æ ¼åå·®
                      request.type_filling=ORDER_FILLING_IOC;
                      request.position =PositionGetTicket(t-1);
                      if(!OrderSend(request,result))
@@ -323,16 +323,16 @@ void  du_1_buy(string symbol,int magic=0)
                   {
                      MqlTradeRequest request={0};
                      MqlTradeResult  result={0};
-                     request.action   =TRADE_ACTION_DEAL;                     // ¥æ©ö¾Ş§@?«¬
-                     request.symbol   =symbol;                              // ¥æ©ö«~Ïú
-                     request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1¤â¥æ©ö¶q 
-                     request.type     =ORDER_TYPE_SELL;                        // ???«¬
-                     request.price    =SymbolInfoDouble(symbol,SYMBOL_BID); // «ù?É²®æ
+                     request.action   =TRADE_ACTION_DEAL;                     // äº¤æ˜“æ“ä½œé¡å‹
+                     request.symbol   =symbol;                              // äº¤æ˜“å“ç¨®
+                     request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1æ‰‹äº¤æ˜“é‡ 
+                     request.type     =ORDER_TYPE_SELL;                        // è¨‚å–®é¡å‹
+                     request.price    =SymbolInfoDouble(symbol,SYMBOL_BID); // æŒå€‰åƒ¹æ ¼
                      request.type_filling=ORDER_FILLING_IOC;
-                     request.deviation=100; // ¤¹?É²®æ°¾®t
+                     request.deviation=100; // å…è¨±åƒ¹æ ¼åå·®
                      request.position =PositionGetTicket(i);
                      if(!OrderSend(request,result))
-                     PrintFormat("OrderSend error %d",GetLastError());   // ¦pªG¤£¯à?°e?¨D¡A?¥X??
+                     PrintFormat("OrderSend error %d",GetLastError());   // å¦‚æœä¸èƒ½é€è«‹æ±‚ï¼Œè¼¸å‡ºéŒ¯èª¤
                   }
                  else
                   {
@@ -340,16 +340,16 @@ void  du_1_buy(string symbol,int magic=0)
                      {
                         MqlTradeRequest request={0};
                         MqlTradeResult  result={0};
-                        request.action   =TRADE_ACTION_DEAL;                     // ¥æ©ö¾Ş§@?«¬
-                        request.symbol   =symbol;                              // ¥æ©ö«~Ïú
-                        request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1¤â¥æ©ö¶q 
-                        request.type     =ORDER_TYPE_SELL;                        // ???«¬
-                        request.price    =SymbolInfoDouble(symbol,SYMBOL_BID); // «ù?É²®æ
-                        request.deviation=100; // ¤¹?É²®æ°¾®t
+                        request.action   =TRADE_ACTION_DEAL;                     // äº¤æ˜“æ“ä½œé¡å‹
+                        request.symbol   =symbol;                              // äº¤æ˜“å“ç¨®
+                        request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1æ‰‹äº¤æ˜“é‡ 
+                        request.type     =ORDER_TYPE_SELL;                        // è¨‚å–®é¡å‹
+                        request.price    =SymbolInfoDouble(symbol,SYMBOL_BID); // æŒå€‰åƒ¹æ ¼
+                        request.deviation=100; // å…è¨±åƒ¹æ ¼åå·®
                         request.type_filling=ORDER_FILLING_IOC;
                         request.position =PositionGetTicket(i);
                         if(!OrderSend(request,result))
-                        PrintFormat("OrderSend error %d",GetLastError());   // ¦pªG¤£¯à?°e?¨D¡A?¥X??
+                        PrintFormat("OrderSend error %d",GetLastError());   // å¦‚æœä¸èƒ½é€è«‹æ±‚ï¼Œè¼¸å‡ºéŒ¯èª¤
                      }
                   }
               }
@@ -369,16 +369,16 @@ void  du_1_sell(string symbol,int magic=0)
                   {
                     MqlTradeRequest request={0};
                     MqlTradeResult  result={0};
-                     request.action   =TRADE_ACTION_DEAL;                     // ¥æ©ö¾Ş§@?«¬
-                     request.symbol   =symbol;                              // ¥æ©ö«~Ïú
-                     request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1¤â¥æ©ö¶q 
-                     request.type     =ORDER_TYPE_BUY;                        // ???«¬
-                     request.price    =SymbolInfoDouble(symbol,SYMBOL_ASK); // «ù?É²®æ
-                     request.deviation=100; // ¤¹?É²®æ°¾®t
+                     request.action   =TRADE_ACTION_DEAL;                     // äº¤æ˜“æ“ä½œé¡å‹
+                     request.symbol   =symbol;                              // äº¤æ˜“å“ç¨®
+                     request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1æ‰‹äº¤æ˜“é‡ 
+                     request.type     =ORDER_TYPE_BUY;                        // è¨‚å–®é¡å‹
+                     request.price    =SymbolInfoDouble(symbol,SYMBOL_ASK); // æŒå€‰åƒ¹æ ¼
+                     request.deviation=100; // å…è¨±åƒ¹æ ¼åå·®
                      request.type_filling=ORDER_FILLING_IOC;
                      request.position =PositionGetTicket(i);
                      if(!OrderSend(request,result))
-                     PrintFormat("OrderSend error %d",GetLastError());   // ¦pªG¤£¯à?°e?¨D¡A?¥X??
+                     PrintFormat("OrderSend error %d",GetLastError());   // å¦‚æœä¸èƒ½é€è«‹æ±‚ï¼Œè¼¸å‡ºéŒ¯èª¤
                   }
                  else
                   {
@@ -386,12 +386,12 @@ void  du_1_sell(string symbol,int magic=0)
                      {
                         MqlTradeRequest request={0};
                         MqlTradeResult  result={0};
-                        request.action   =TRADE_ACTION_DEAL;                     // ¥æ©ö¾Ş§@?«¬
-                        request.symbol   =symbol;                              // ¥æ©ö«~Ïú
-                        request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1¤â¥æ©ö¶q 
-                        request.type     =ORDER_TYPE_BUY;                        // ???«¬
-                        request.price    =SymbolInfoDouble(symbol,SYMBOL_ASK); // «ù?É²®æ
-                        request.deviation=100; // ¤¹?É²®æ°¾®t
+                        request.action   =TRADE_ACTION_DEAL;                     // äº¤æ˜“æ“ä½œé¡å‹
+                        request.symbol   =symbol;                              // äº¤æ˜“å“ç¨®
+                        request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1æ‰‹äº¤æ˜“é‡ 
+                        request.type     =ORDER_TYPE_BUY;                        // è¨‚å–®é¡å‹
+                        request.price    =SymbolInfoDouble(symbol,SYMBOL_ASK); // æŒå€‰åƒ¹æ ¼
+                        request.deviation=100; // å…è¨±åƒ¹æ ¼åå·®
                         request.type_filling=ORDER_FILLING_IOC;
                         request.position =PositionGetTicket(i);
                         if(!OrderSend(request,result))
@@ -418,16 +418,16 @@ void  du_1_sell(string symbol,int magic=0)
                {
                   MqlTradeRequest request={0};
                   MqlTradeResult  result={0};
-                  request.action   =TRADE_ACTION_DEAL;                     // ¥æ©ö¾Ş§@?«¬
-                  request.symbol   =symbol;                              // ¥æ©ö«~Ïú
-                  request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1¤â¥æ©ö¶q 
-                  request.type     =ORDER_TYPE_SELL;                        // ???«¬
-                  request.price    =SymbolInfoDouble(symbol,SYMBOL_BID); // «ù?É²®æ
+                  request.action   =TRADE_ACTION_DEAL;                     // äº¤æ˜“æ“ä½œé¡å‹
+                  request.symbol   =symbol;                              // äº¤æ˜“å“ç¨®
+                  request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1æ‰‹äº¤æ˜“é‡ 
+                  request.type     =ORDER_TYPE_SELL;                        // è¨‚å–®é¡å‹
+                  request.price    =SymbolInfoDouble(symbol,SYMBOL_BID); // æŒå€‰åƒ¹æ ¼
                   request.type_filling=ORDER_FILLING_IOC;
-                  request.deviation=100; // ¤¹?É²®æ°¾®t
+                  request.deviation=100; // å…è¨±åƒ¹æ ¼åå·®
                   request.position =PositionGetTicket(i);
                   if(!OrderSend(request,result))
-                  PrintFormat("OrderSend error %d",GetLastError());   // ¦pªG¤£¯à?°e?¨D¡A?¥X??
+                  PrintFormat("OrderSend error %d",GetLastError());   // å¦‚æœä¸èƒ½é€è«‹æ±‚ï¼Œè¼¸å‡ºéŒ¯èª¤
                }
               else
                {
@@ -435,16 +435,16 @@ void  du_1_sell(string symbol,int magic=0)
                   {
                      MqlTradeRequest request={0};
                      MqlTradeResult  result={0};
-                     request.action   =TRADE_ACTION_DEAL;                     // ¥æ©ö¾Ş§@?«¬
-                     request.symbol   =symbol;                              // ¥æ©ö«~Ïú
-                     request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1¤â¥æ©ö¶q 
-                     request.type     =ORDER_TYPE_SELL;                        // ???«¬
-                     request.price    =SymbolInfoDouble(symbol,SYMBOL_BID); // «ù?É²®æ
-                     request.deviation=100; // ¤¹?É²®æ°¾®t
+                     request.action   =TRADE_ACTION_DEAL;                     // äº¤æ˜“æ“ä½œé¡å‹
+                     request.symbol   =symbol;                              // äº¤æ˜“å“ç¨®
+                     request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1æ‰‹äº¤æ˜“é‡ 
+                     request.type     =ORDER_TYPE_SELL;                        // è¨‚å–®é¡å‹
+                     request.price    =SymbolInfoDouble(symbol,SYMBOL_BID); // æŒå€‰åƒ¹æ ¼
+                     request.deviation=100; // å…è¨±åƒ¹æ ¼åå·®
                      request.type_filling=ORDER_FILLING_IOC;
                      request.position =PositionGetTicket(i);
                      if(!OrderSend(request,result))
-                     PrintFormat("OrderSend error %d",GetLastError());   // ¦pªG¤£¯à?°e?¨D¡A?¥X??
+                     PrintFormat("OrderSend error %d",GetLastError());   // å¦‚æœä¸èƒ½é€è«‹æ±‚ï¼Œè¼¸å‡ºéŒ¯èª¤
                   }
                }
              
@@ -465,16 +465,16 @@ void  closeallsell(string symbol,int magic=0)
                {
                  MqlTradeRequest request={0};
                  MqlTradeResult  result={0};
-                  request.action   =TRADE_ACTION_DEAL;                     // ¥æ©ö¾Ş§@?«¬
-                  request.symbol   =symbol;                              // ¥æ©ö«~Ïú
-                  request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1¤â¥æ©ö¶q 
-                  request.type     =ORDER_TYPE_BUY;                        // ???«¬
-                  request.price    =SymbolInfoDouble(symbol,SYMBOL_ASK); // «ù?É²®æ
-                  request.deviation=100; // ¤¹?É²®æ°¾®t
+                  request.action   =TRADE_ACTION_DEAL;                     // äº¤æ˜“æ“ä½œé¡å‹
+                  request.symbol   =symbol;                              // äº¤æ˜“å“ç¨®
+                  request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1æ‰‹äº¤æ˜“é‡ 
+                  request.type     =ORDER_TYPE_BUY;                        // è¨‚å–®é¡å‹
+                  request.price    =SymbolInfoDouble(symbol,SYMBOL_ASK); // æŒå€‰åƒ¹æ ¼
+                  request.deviation=100; // å…è¨±åƒ¹æ ¼åå·®
                   request.type_filling=ORDER_FILLING_IOC;
                   request.position =PositionGetTicket(i);
                   if(!OrderSend(request,result))
-                  PrintFormat("OrderSend error %d",GetLastError());   // ¦pªG¤£¯à?°e?¨D¡A?¥X??
+                  PrintFormat("OrderSend error %d",GetLastError());   // å¦‚æœä¸èƒ½é€è«‹æ±‚ï¼Œè¼¸å‡ºéŒ¯èª¤
                }
               else
                {
@@ -482,12 +482,12 @@ void  closeallsell(string symbol,int magic=0)
                   {
                      MqlTradeRequest request={0};
                      MqlTradeResult  result={0};
-                     request.action   =TRADE_ACTION_DEAL;                     // ¥æ©ö¾Ş§@?«¬
-                     request.symbol   =symbol;                              // ¥æ©ö«~Ïú
-                     request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1¤â¥æ©ö¶q 
-                     request.type     =ORDER_TYPE_BUY;                        // ???«¬
-                     request.price    =SymbolInfoDouble(symbol,SYMBOL_ASK); // «ù?É²®æ
-                     request.deviation=100; // ¤¹?É²®æ°¾®t
+                     request.action   =TRADE_ACTION_DEAL;                     // äº¤æ˜“æ“ä½œé¡å‹
+                     request.symbol   =symbol;                              // äº¤æ˜“å“ç¨®
+                     request.volume   =PositionGetDouble(POSITION_VOLUME); // 0.1æ‰‹äº¤æ˜“é‡ 
+                     request.type     =ORDER_TYPE_BUY;                        // è¨‚å–®é¡å‹
+                     request.price    =SymbolInfoDouble(symbol,SYMBOL_ASK); // æŒå€‰åƒ¹æ ¼
+                     request.deviation=100; // å…è¨±åƒ¹æ ¼åå·®
                      request.type_filling=ORDER_FILLING_IOC;
                      request.position =PositionGetTicket(i);
                      if(!OrderSend(request,result))
